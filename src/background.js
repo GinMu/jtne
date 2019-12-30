@@ -39,7 +39,7 @@ jingtumRemote.on("transactions", (data) => {
     let transaction = data.transaction;
     let Account = transaction.Account;
     let TransactionType = transaction.TransactionType;
-
+    let accountMirror = getMirrorAccount(Account);
     if (TransactionType === "OfferCreate") {
       if (Accounts.includes(Account)) {
         notification = new Notification(accountMirror, {
@@ -50,7 +50,6 @@ jingtumRemote.on("transactions", (data) => {
       } else {
         let takerGets = transaction.TakerGets;
         let takerPays = transaction.TakerPays;
-        let accountMirror = getMirrorAccount(Account);
         if (isNumber(takerGets)) {
           takerGets = {
             value: parseFloat(takerGets) / 1e6,
@@ -97,7 +96,7 @@ jingtumRemote.on("transactions", (data) => {
         }
         let tokenInfo = tokens[Amount.currency];
         if (tokenInfo && parseFloat(Amount.value) >= tokenInfo.minAmount) {
-          notification = new Notification(getMirrorAccount(Account), {
+          notification = new Notification(accountMirror, {
             data: SWTCSCAN + transaction.hash,
             body: "转账" + parseFloat(Amount.value).toLocaleString() + " " + Amount.currency,
             icon: ICON
